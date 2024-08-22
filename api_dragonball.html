@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Ball Z API</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+        /* Estilo para limitar o tamanho das imagens */
+        #characterImage {
+            width: 300px;
+            height: 400px;
+            
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header bg-warning text-center">
+                <h2>Dragon Ball Z - Personagens</h2>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <label for="characterId">ID do Personagem:</label>
+                        <input id="characterId" class="form-control" type="number" placeholder="Digite o ID do personagem">
+                    </div>
+                    <button type="button" class="btn btn-danger btn-block" onclick="getCharacter()">Buscar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h4 id="characterInfo" class="text-center"></h4>
+            <img id="characterImage" class="img-fluid mx-auto d-block" alt="Imagem do Personagem">
+        </div>
+    </div>
+
+    <script>
+        function getCharacter() {
+            const characterId = document.getElementById('characterId').value;
+            const url = `https://dragonball-api.com/api/characters/${characterId}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.name) {
+                        document.getElementById('characterInfo').innerHTML = `
+                            <strong>Nome:</strong> ${data.name}<br>
+                            <strong>Raça:</strong> ${data.race}<br>
+                            <strong>Planeta de Origem:</strong> ${data.originPlanet.name}<br>
+                            <strong>Ki:</strong> ${data.ki}<br>
+                            <strong>Máximo de Ki:</strong> ${data.maxKi}<br>
+                            <strong>Descrição:</strong> ${data.description}<br>
+                            <strong>Afiliação:</strong> ${data.affiliation}
+                        `;
+                        document.getElementById('characterImage').src = data.image;
+                    } else {
+                        document.getElementById('characterInfo').textContent = 'Personagem não encontrado.';
+                        document.getElementById('characterImage').src = '';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    document.getElementById('characterInfo').textContent = 'Erro na busca. Verifique o ID do personagem.';
+                    document.getElementById('characterImage').src = '';
+                });
+        }
+    </script>
+</body>
+
+</html>
